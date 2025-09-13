@@ -1,0 +1,106 @@
+Your `main.ts` file uses an `appConfig` object to configure the application, which is the standard setup for a modern, standalone Angular app. To integrate the Monaco Editor, you need to add its module to the `appConfig` file's `providers` array.
+
+## Steps
+
+1.  **Install Packages:** First, install the necessary packages for the editor.
+
+    ```bash
+    npm install monaco-editor @materia-ui/ngx-monaco-editor
+    ```
+
+2.  **Update `app.config.ts`:** Open your `app.config.ts` file and import `MonacoEditorModule` and `FormsModule`. Then, add them to the `providers` array using `importProvidersFrom`.
+
+    ```typescript
+    import { ApplicationConfig } from '@angular/core';
+    import { provideRouter } from '@angular/router';
+    import { importProvidersFrom } from '@angular/core';
+    import { MonacoEditorModule } from '@materia-ui/ngx-monaco-editor';
+    import { FormsModule } from '@angular/forms';
+    import { routes } from './app.routes'; // Adjust this path if necessary
+
+    export const appConfig: ApplicationConfig = {
+      providers: [
+        provideRouter(routes),
+        importProvidersFrom(MonacoEditorModule, FormsModule)
+      ]
+    };
+    ```
+
+3.  **Use in a Component:** Now, you can use the `<ngx-monaco-editor>` component in any standalone component within your application. Make sure the component's `imports` array includes `MonacoEditorModule` and `FormsModule`.
+
+    ```typescript
+    // your-component.component.ts
+    import { Component } from '@angular/core';
+    import { MonacoEditorModule } from '@materia-ui/ngx-monaco-editor';
+    import { FormsModule } from '@angular/forms';
+
+    @Component({
+      selector: 'app-your-component',
+      standalone: true,
+      imports: [MonacoEditorModule, FormsModule], // Import modules here
+      template: `
+        <ngx-monaco-editor [options]="editorOptions" [(ngModel)]="code"></ngx-monaco-editor>
+      `,
+    })
+    export class YourComponent {
+      editorOptions = { theme: 'vs-dark', language: 'javascript' };
+      code = 'console.log("Hello, world!");';
+    }
+    ```
+
+//error
+The `ReferenceError: window is not defined` error indicates that the code is trying to access the **browser's `window` object in a server-side environment**. This happens in Angular applications when you have **Server-Side Rendering (SSR)** enabled.
+
+The Monaco Editor, specifically its loading service, depends on the `window` object to function. During SSR, the initial rendering of the application occurs on the server, which does not have a `window` or `document` object.
+
+### How to Fix the Error
+
+To solve this, you must tell Angular to load the Monaco Editor only on the client side. This can be done by conditionally rendering the component or by using a platform check to ensure the code runs only in the browser.
+
+#### Option 1: Using `isPlatformBrowser` (Recommended)
+
+This is the cleanest and most reliable way to handle code that depends on browser APIs.
+
+1.  **Inject the `PLATFORM_ID` and `isPlatformBrowser`:**
+    In your component's constructor, inject the `PLATFORM_ID` token. This token tells you whether the code is running in a browser or on the server.
+
+2.  **Conditionally Load the Editor:**
+    Use `isPlatformBrowser` to check the platform and conditionally load the editor component.
+
+Here is an example:
+
+```typescript
+// your-component.component.ts
+import { Component, OnInit, PLATFORM_ID, Inject } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
+
+@Component({
+  selector: 'app-your-component',
+  standalone: true,
+  imports: [CommonModule, MonacoEditorModule, FormsModule],
+  template: `
+    @if (isBrowser) {
+      <ngx-monaco-editor [options]="editorOptions" [(ngModel)]="code"></ngx-monaco-editor>
+    } @else {
+      <p>Loading editor...</p>
+    }
+  `,
+})
+export class YourComponent implements OnInit {
+  isBrowser: boolean;
+  editorOptions = { theme: 'vs-dark', language: 'javascript' };
+  code = 'console.log("Hello, world!");';
+
+  constructor(@Inject(PLATFORM_ID) private platformId: Object) {
+    this.isBrowser = isPlatformBrowser(this.platformId);
+  }
+
+  ngOnInit(): void {
+    if (this.isBrowser) {
+      // Any initialization logic that needs the browser environment
+    }
+  }
+}
+```
+
+This code ensures that the `<ngx-monaco-editor>` component and its associated services are only initialized when the application is running in a browser environment, thus avoiding the `ReferenceError`.

@@ -1,0 +1,54 @@
+<div class="fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center z-50">
+  <div class="relative bg-white rounded-lg shadow-xl max-w-2xl w-full mx-4 p-6 sm:p-8">
+    
+    <!-- Close Button -->
+    <button 
+      (click)="close()" 
+      class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition duration-200"
+    >
+      ✖
+    </button>
+
+    <!-- Modal Header -->
+    <div class="border-b pb-4 mb-4">
+      <h2 class="text-3xl font-bold text-gray-800">Create Project</h2>
+    </div>
+
+    <!-- Modal Body -->
+    <div class="space-y-4 text-gray-700">
+      <div>
+        <label class="block text-sm font-medium text-gray-700">Project Name</label>
+        <input
+          [(ngModel)]="project.name"
+          type="text"
+          class="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+          placeholder="Enter project name"
+        />
+      </div>
+
+      <div>
+  <label class="block text-sm font-medium text-gray-700">Language</label>
+  <select
+    [(ngModel)]="project.language"
+    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+  >
+    <option value="" disabled>Select a language</option>
+    <option value="Java">Java</option>
+    <option value="Python">Python</option>
+    <option value="C++">C++</option>
+    <option value="JavaScript">JavaScript</option>
+    <option value="TypeScript">TypeScript</option>
+  </select>
+</div>
+
+
+      
+    </div>
+
+    <!-- Modal Actions -->
+    <div class="mt-6 flex justify-end gap-2">
+      <button class="px-4 py-2 bg-gray-200 rounded" (click)="close()">Cancel</button>
+      <button class="px-4 py-2 bg-blue-500 text-white rounded" (click)="save()">Save</button>
+    </div>
+  </div>
+</div>

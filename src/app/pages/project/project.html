@@ -1,0 +1,33 @@
+<button (click)="openDialog()">Create Project</button>
+<div class="container">
+        <section class="projects-section">
+            <h2>Your Projects</h2>
+            <ul class="projects-list">
+                <!-- Replace with server-side loop / template rendering -->
+                <li class="project-item">
+                    <span class="project-name">Project 1</span>
+                    <span class="project-language">Java</span>
+                </li>
+                <li class="project-item">
+                    <span class="project-name">Project 2</span>
+                    <span class="project-language">Python</span>
+                </li>
+            </ul>
+        </section>
+
+        <section class="projects-section">
+            <h2>Other's Projects</h2>
+            <ul class="projects-list">
+                <li class="project-item" (click)="onItemClick(null)">
+                    <span class="project-name">Project A<span class="project-author">(Alice)</span></span>
+                    <span class="project-language">C++</span>
+                    
+                </li>
+                <li class="project-item">
+                    <span class="project-name">Project B<span class="project-author">(Bob)</span></span>
+                    <span class="project-language">JavaScript</span>
+                    
+                </li>
+            </ul>
+        </section>
+    </div>

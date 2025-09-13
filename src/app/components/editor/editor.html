@@ -1,0 +1,57 @@
+<div class="p-4 bg-gray-100 min-h-screen flex flex-col items-center">
+  <div class="max-w-4xl w-full bg-white rounded-lg shadow-xl p-6">
+    <h1 class="text-2xl font-bold mb-4 text-center">Ace Angular Editor</h1>
+
+    <div class="flex flex-wrap gap-4 mb-4 justify-center">
+      <select data-type="theme" (change)="onThemeChange($event)">
+        <option value="monokai">Monokai</option>
+        <option value="github">GitHub</option>
+        <option value="dracula">Dracula</option>
+        <option value="solarized_light">Solarized Light</option>
+        <option value="solarized_dark">Solarized Dark</option>
+        <option value="terminal">Terminal</option>
+      </select>
+
+      <select data-type="mode" (change)="onThemeChange($event)">
+        <option value="typescript">TypeScript</option>
+        <option value="javascript">JavaScript</option>
+        <option value="html">HTML</option>
+        <option value="css">CSS</option>
+        <option value="json">JSON</option>
+        <option value="python">Python</option>
+        <option value="java">Java</option>
+      </select>
+
+      <select data-type="keyboard" (change)="onThemeChange($event)">
+        <option value="">Default</option>
+        <option value="ace/keyboard/vim">Vim</option>
+        <option value="ace/keyboard/emacs">Emacs</option>
+      </select>
+    </div>
+
+    <div class="flex gap-2 mb-4">
+      <button (click)="logCode()" class="px-4 py-2 bg-blue-600 text-white rounded">
+        Log Code
+      </button>
+      <button (click)="downloadCode()" class="px-4 py-2 bg-green-600 text-white rounded">
+        Download
+      </button>
+    </div>
+
+    <!-- 🔹 Use only one container -->
+ 
+
+@if (loading) {
+  <div class="loading-screen">
+  Loading project...
+</div>
+}
+
+ <div #editorContainer id="editor" class="border rounded w-full" style="height:400px; width:100%;"></div>
+
+ <h3>Result</h3>
+<button (click)="runCode()"><h3>RUN</h3> </button>
+
+<h3 id="output" >{{output()}}</h3> 
+  </div>
+</div>
