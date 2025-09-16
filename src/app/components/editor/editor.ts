@@ -5,6 +5,7 @@ import { isPlatformBrowser } from '@angular/common';
 import { Subscription } from 'rxjs';
 import { log } from 'node:console';
 import { ProjectService } from '../../service/project-service';
+import { ActivatedRoute, Router } from '@angular/router';
 
 
 declare var ace: any;
@@ -25,39 +26,54 @@ export class EditorComponent implements AfterViewInit {
   currentCode = '';
   isBrowser: boolean;
   output = signal<string>('');
+
   constructor(
     private projectService: ProjectService,
-    @Inject(PLATFORM_ID) private platformId: Object
+    @Inject(PLATFORM_ID) private platformId: Object,
+    private route: ActivatedRoute, private router: Router
   ) {
     this.isBrowser = isPlatformBrowser(this.platformId);
   }
 
+shareId!: string | null;
+  projectId!: string|null;
   async ngAfterViewInit(): Promise<void> {
     if (this.isBrowser) {
       this.initializeAceEditor();
     }
-    try {
-      // Show loading screen automatically because `loading = true`
-      const fetchedProject = await this.projectService.checkAndOpenProject("123"); // your async function
-      this.aceEditor.setValue(
-        fetchedProject.code
-      );
-      console.log(fetchedProject);
+    await this.initializeProject();
 
+    // this.router.navigate(['/project'], { replaceUrl: true });
+  }
+  async initializeProject() {
+    try {
+      
+      
+  
+this.projectId = this.route.snapshot.paramMap.get('id')!;
+      console.log("Project ID from route:", this.projectId);
+const fetchedProject = await this.projectService.checkAndOpenProject(
+        this.projectId);
+      this.aceEditor.setValue(
+        (fetchedProject['codeContent'] || []).join('\n')
+      );
+       console.log("FEtched proj" + fetchedProject.name+ " " + fetchedProject.value);
+  
+      
+     
+
+      
     } catch (error) {
       console.error("Error opening project:", error);
     } finally {
-      // Hide loading screen when done
       this.loading = false;
     }
 
     this.subscription = this.projectService.code$.subscribe((code) => {
-      this.aceEditor.setValue(code); // update editor content
-     
+      this.aceEditor.setValue(code);      
     });
-
   }
-  loading: boolean = true; // true while loading
+  loading: boolean = true;
 
   private initializeAceEditor(): void {
     if (!this.isBrowser) return;
@@ -81,8 +97,8 @@ export class EditorComponent implements AfterViewInit {
   async runCode(): Promise<void> {
     console.log(this.aceEditor.getValue());
     console.log("asdfweasdfwef");
-    
-    this.projectService.updateProjectCode("123", this.aceEditor.getValue());
+this.projectId=this.route.snapshot.paramMap.get('id')!;
+    this.projectService.updateProjectCode(this.projectId, this.aceEditor.getValue());
     // const language = this.aceEditor.session.getMode().$id.replace("ace/mode/", "");
     // const codepart = this.aceEditor.getValue();
 

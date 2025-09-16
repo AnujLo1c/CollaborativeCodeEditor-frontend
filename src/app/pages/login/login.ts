@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Auth } from '../../service/auth';
-import { UrlSegment } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router'; // ✅ use Angular Router
 
 @Component({
   selector: 'app-login',
@@ -12,34 +12,44 @@ import { UrlSegment } from '@angular/router';
 })
 export class Login {
   loginForm: FormGroup;
+  shareId: string | null = null;
 
-  constructor(private fb: FormBuilder, private auth: Auth) {
+  // ✅ Inject Angular Router here
+  constructor(
+    private fb: FormBuilder, 
+    private auth: Auth, 
+    private route: ActivatedRoute,
+    private router: Router
+  ) {
     this.loginForm = this.fb.group({
       username: ['', [Validators.required]],
       password: ['', [Validators.required, Validators.minLength(5)]]
     });
-    // console.log(this.loginForm);
-  }
 
+    this.shareId = this.route.snapshot.queryParamMap.get('shareId');
+  }
+// ngOnInit(){
+//   this.shareId = this.route.snapshot.queryParamMap.get('shareId');
+  
+//   this.router.navigate(['/login'], { replaceUrl: true });
+// }
   onSubmit() {
-    console.log(this.loginForm.value);
-    console.log(this.loginForm.valid);
     if (this.loginForm.valid) {
       const username = this.loginForm.get('username')?.value;
       const password = this.loginForm.get('password')?.value;
-console.log(username);
 
       this.auth.login(username, password).subscribe({
         next: (response) => {
-          console.log('Login successful:', response);
-  //         (typeof window !== 'undefined' && localStorage)
-  // ? localStorage.setItem('jwt',response)
-  // : null;
-
           localStorage.setItem('jwt', response);
           localStorage.setItem('username', username);
 
-          window.location.href = '/project';
+
+
+          if (this.shareId) {  
+            this.router.navigate(['/project/share', this.shareId]); 
+          } else {
+            this.router.navigate(['/project']);
+          }
         },
         error: (error) => {
           console.error('Login error:', error);

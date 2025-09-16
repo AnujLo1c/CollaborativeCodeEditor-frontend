@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { ProjectScreen } from './pages/project-screen/project-screen';
 
 export const routes: Routes = [
     {
@@ -22,6 +23,8 @@ export const routes: Routes = [
     {
         path: 'project/:id',
         loadComponent:() => import('./pages/project-screen/project-screen').then(m=>m.ProjectScreen)
-    }
+    },
+    { path: 'project/share/:shareId', loadComponent:()=> import('./pages/project/project').then(m => m.Project) }
+
    
 ];
