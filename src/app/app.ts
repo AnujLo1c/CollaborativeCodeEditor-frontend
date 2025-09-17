@@ -8,9 +8,14 @@ import { Header } from "./components/header/header";
   imports: [RouterOutlet, Header],
   template: `
  <app-header [title]="title()"></app-header>
-    <router-outlet></router-outlet>
+ 
+   <router-outlet></router-outlet>
+  
+
   `,
-  styles: [],
+  styles: [
+    
+      ],
 })
 export class App {
   protected readonly title = signal('collaborative-code-editor');

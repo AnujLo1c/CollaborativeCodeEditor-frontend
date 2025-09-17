@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Auth } from '../../service/auth';
 import { ActivatedRoute, Router } from '@angular/router'; // ✅ use Angular Router
+import { HeaderService } from '../../service/header-service';
 
 @Component({
   selector: 'app-login',
@@ -19,7 +20,8 @@ export class Login {
     private fb: FormBuilder, 
     private auth: Auth, 
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private headerService:HeaderService
   ) {
     this.loginForm = this.fb.group({
       username: ['', [Validators.required]],
@@ -34,6 +36,8 @@ export class Login {
 //   this.router.navigate(['/login'], { replaceUrl: true });
 // }
   onSubmit() {
+    console.log("Form submitted:", this.loginForm.value);
+    
     if (this.loginForm.valid) {
       const username = this.loginForm.get('username')?.value;
       const password = this.loginForm.get('password')?.value;
@@ -44,7 +48,9 @@ export class Login {
           localStorage.setItem('username', username);
 
 
-
+//header
+          console.log('Login successful, JWT stored.');
+          this.headerService.updateLoginStatus(true);
           if (this.shareId) {  
             this.router.navigate(['/project/share', this.shareId]); 
           } else {

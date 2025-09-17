@@ -1,24 +1,41 @@
-header {
+.app-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: #333;
-  color: white;
-  padding: 12px 24px;
+  padding: 0.8rem 2rem;
+  background: #0f172a; /* dark theme */
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
 }
 
-header .logo {
-  font-size: 20px;
+.logo {
+  font-size: 1.5rem;
   font-weight: bold;
+  color: #3b82f6; /* blue accent */
+  letter-spacing: 1px;
 }
 
-nav a {
-  margin-left: 15px;
-  color: white;
+.nav-links {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.nav-links a {
   text-decoration: none;
+  color: #e2e8f0;
+  font-weight: 500;
+  transition: color 0.2s ease, border-bottom 0.2s ease;
 }
 
-nav a:hover {
-  text-decoration: underline;
+.nav-links a:hover {
+  color: #3b82f6;
 }
 
+.nav-links a.active {
+  color: #3b82f6;
+  border-bottom: 2px solid #3b82f6;
+  padding-bottom: 2px;
+}
