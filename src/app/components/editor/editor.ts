@@ -26,7 +26,7 @@ export class EditorComponent implements AfterViewInit {
   currentCode = '';
   isBrowser: boolean;
   output = signal<string>('');
-
+ title = signal('Project Title');
   constructor(
     private projectService: ProjectService,
     @Inject(PLATFORM_ID) private platformId: Object,
@@ -37,15 +37,17 @@ export class EditorComponent implements AfterViewInit {
 
 shareId!: string | null;
   projectId!: string|null;
+    loading = signal(true);
   async ngAfterViewInit(): Promise<void> {
     if (this.isBrowser) {
-      this.initializeAceEditor();
+       this.initializeAceEditor();
     }
     await this.initializeProject();
 
     // this.router.navigate(['/project'], { replaceUrl: true });
   }
   async initializeProject() {
+  
     try {
       
       
@@ -54,26 +56,33 @@ this.projectId = this.route.snapshot.paramMap.get('id')!;
       console.log("Project ID from route:", this.projectId);
 const fetchedProject = await this.projectService.checkAndOpenProject(
         this.projectId);
-      this.aceEditor.setValue(
-        (fetchedProject['codeContent'] || []).join('\n')
-      );
-       console.log("FEtched proj" + fetchedProject.name+ " " + fetchedProject.value);
-  
-      
-     
+      // this.aceEditor.setValue(
 
+      //   (fetchedProject['codeContent'] || []).join('\n'));
+   
+this.aceEditor.setValue('console.log("Hello, world!");');
+     
+        console.log("fetchted"+(fetchedProject['codeContent'] || []).join('\n'));
+      this.projectService.setCode((fetchedProject['codeContent'] || []).join('\n'));
+      console.log("Fetched project:", fetchedProject.name);
       
+      this.title.set(fetchedProject.name??"title");
+       console.log("FEtched proj" + fetchedProject.name+ " " );   
     } catch (error) {
       console.error("Error opening project:", error);
     } finally {
-      this.loading = false;
+      console.log("Setting loading to false");
+      
+      this.loading.set(false);
+     
     }
 
     this.subscription = this.projectService.code$.subscribe((code) => {
+      
       this.aceEditor.setValue(code);      
     });
   }
-  loading: boolean = true;
+
 
   private initializeAceEditor(): void {
     if (!this.isBrowser) return;
@@ -93,23 +102,38 @@ const fetchedProject = await this.projectService.checkAndOpenProject(
         enableSnippets: true
       });
     }
+       
   }
   async runCode(): Promise<void> {
     console.log(this.aceEditor.getValue());
     console.log("asdfweasdfwef");
 this.projectId=this.route.snapshot.paramMap.get('id')!;
-    this.projectService.updateProjectCode(this.projectId, this.aceEditor.getValue());
-    // const language = this.aceEditor.session.getMode().$id.replace("ace/mode/", "");
-    // const codepart = this.aceEditor.getValue();
+//TODO: update code on every change
+    // this.projectService.updateProjectCode(this.projectId, this.aceEditor.getValue());
 
-    // try {
-    //   const result: string = await this.projectService.runProject(language, codepart);
+///////
 
-    //   this.output.set(result);
-    // } catch (error) {
-    //   console.error("Error running project:", error);
-    // }
+    const language = this.aceEditor.session.getMode().$id.replace("ace/mode/", "");
+    const codepart = this.aceEditor.getValue();
+
+    try {
+      const result: string = await this.projectService.runProject(language, codepart);
+
+      this.output.set(result);
+    } catch (error) {
+      console.error("Error running project:", error);
+    }
   }
+
+  async generateShareableLink() {
+  this.projectId = this.route.snapshot.paramMap.get('id')!;
+  const shareableLink = await this.projectService.generateShareableLink(this.projectId);
+ navigator.clipboard.writeText(shareableLink).then(() => {
+    alert('Share link copied to clipboard: ' + shareableLink['link']);
+  }).catch(err => {
+    console.error('Failed to copy link:', err);
+  });
+}
 
 
   logCode(): void {

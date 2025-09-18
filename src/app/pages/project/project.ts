@@ -54,6 +54,7 @@ export class Project {
 
     dialogRef.afterClosed().subscribe((result: any) => {
       console.log('Dialog closed with:', result);
+      if (result)
     this.dashboardService.createProject(result);
     });
   }

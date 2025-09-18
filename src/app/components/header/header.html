@@ -2,10 +2,15 @@
   <div class="logo">⚡ CodeSync</div>
   <nav class="nav-links">
     <a routerLink="/" routerLinkActive="active" >Home</a>
-    @if(!isLogin()){
+    @if(!authService.isLogin()){
       <a routerLink="/login" routerLinkActive="active">Login</a>
     <a routerLink="/register" routerLinkActive="active">Register</a>
     }
-    <a routerLink="/project/123" routerLinkActive="active">Project</a>
+    @if(authService.isLogin()){
+      <a routerLink="/project" routerLinkActive="active">Dashboard</a>
+      <a (click)="logout()" >Logout</a>
+    }
+    
+    
   </nav>
 </header>

@@ -16,20 +16,7 @@ import { ActivatedRoute } from '@angular/router';
   styleUrl: './project-screen.scss'
 })
 export class ProjectScreen {
-  constructor(private route:ActivatedRoute,private projectService: ProjectService){
 
-  }
-projectId: any;
-
-  async generateShareableLink() {
-  this.projectId = this.route.snapshot.paramMap.get('id')!;
-  const shareableLink = await this.projectService.generateShareableLink(this.projectId);
- navigator.clipboard.writeText(shareableLink).then(() => {
-    alert('Share link copied to clipboard: ' + shareableLink['link']);
-  }).catch(err => {
-    console.error('Failed to copy link:', err);
-  });
-}
 
 
 }

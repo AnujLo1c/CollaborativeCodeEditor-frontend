@@ -63,7 +63,9 @@ async checkAndOpenProject(projectId: string): Promise<any> {
 }
 
 
-
+setCode(code: string) {
+    this.codeSubject.next(code);
+  }
 
 
 

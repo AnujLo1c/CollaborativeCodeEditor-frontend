@@ -31,6 +31,7 @@ export class CreateProject {
 
   // Close with user-entered data
   save() {
+    
     this.dialogRef.close(this.project); // ✅ send form data back
   }
 }

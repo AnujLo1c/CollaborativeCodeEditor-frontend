@@ -1,10 +1,9 @@
-<button (click)="openDialog()">Create Project</button>
+<!-- <button (click)="openDialog()">Create Project</button>
 <button (click)="getProjects()">check</button>
 <div class="container">
   <section class="projects-section">
     <h2>Your Projects</h2>
     <ul class="projects-list">
-      <!-- Replace with server-side loop / template rendering -->
       @for (item of projects(); track $index) {
       <li (click)="openProject($index,true)" class="project-item">
         <span class="project-name">{{item.name}}</span>
@@ -25,9 +24,45 @@
         <span class="project-name">{{item.name}}<span class="project-author">({{item.author}})</span></span>
         <span class="project-language">{{item.language}}</span>
       </li>
-        } @empty {
+        } @empty { 
   <li>No projects available</li>
 }
+    </ul>
+  </section>
+</div> -->
+<div class="fab" (click)="openDialog()">
+  <span class="fab-icon">+</span>
+  <span class="fab-text">Create Project</span>
+</div>
+
+<div class="container">
+  <section class="projects-section">
+    <h2>Your Projects</h2>
+    <ul class="projects-list">
+      @for (item of projects(); track $index) {
+      <li (click)="openProject($index,true)" class="project-item">
+        <span class="project-name">{{item.name}}</span>
+        <span class="project-language">{{item.language}}</span>
+      </li>
+      } @empty {
+      <li class="empty">No projects available</li>
+      }
+    </ul>
+  </section>
+
+  <section class="projects-section">
+    <h2>Other's Projects</h2>
+    <ul class="projects-list">
+      @for (item of refProjects(); track $index) {
+      <li (click)="openProject($index,false)" class="project-item">
+        <span class="project-name">{{item.name}} 
+          <span class="project-author">({{item.author}})</span>
+        </span>
+        <span class="project-language">{{item.language}}</span>
+      </li>
+      } @empty {
+      <li class="empty">No projects available</li>
+      }
     </ul>
   </section>
 </div>

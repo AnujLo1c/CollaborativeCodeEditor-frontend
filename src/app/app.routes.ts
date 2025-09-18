@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { ProjectScreen } from './pages/project-screen/project-screen';
+import { authGuard } from './auth-guard';
 
 export const routes: Routes = [
     {
@@ -18,13 +19,17 @@ export const routes: Routes = [
     },
     {
         path: 'project',
-        loadComponent: () => import('./pages/project/project').then(m => m.Project)
+        loadComponent: () => import('./pages/project/project').then(m => m.Project),
+        canActivate: [authGuard]
     },
     {
         path: 'project/:id',
-        loadComponent:() => import('./pages/project-screen/project-screen').then(m=>m.ProjectScreen)
+        loadComponent:() => import('./pages/project-screen/project-screen').then(m=>m.ProjectScreen),
+        canActivate: [authGuard]
     },
-    { path: 'project/share/:shareId', loadComponent:()=> import('./pages/project/project').then(m => m.Project) }
+    { path: 'project/share/:shareId', loadComponent:()=> import('./pages/project/project').then(m => m.Project),
+        canActivate: [authGuard]
+     }
 
    
 ];

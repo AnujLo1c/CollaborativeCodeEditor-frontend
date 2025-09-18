@@ -1,83 +1,157 @@
-/* Basic reset */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-}
-
 body {
-    background-color: #f4f4f9;
-    color: #333;
+  font-family: "Segoe UI", Arial, sans-serif;
+  background: #f0f2f5;
+  color: #222;
+  margin: 0;
+  padding: 20px;
 }
 
 .container {
-    max-width: 900px;
-    margin: 40px auto;
-    padding: 0 20px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 30px;
+  margin-top: 20px;
 }
 
 .projects-section {
-    margin-bottom: 40px;
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
 }
 
 .projects-section h2 {
-    font-size: 1.8rem;
-    margin-bottom: 15px;
-    border-bottom: 2px solid #007bff;
-    display: inline-block;
-    padding-bottom: 5px;
-    color: #007bff;
+  color: #0a3d91;
+  margin-bottom: 15px;
+  font-size: 20px;
+  border-bottom: 2px solid #1e5fe0;
+  padding-bottom: 8px;
 }
 
 .projects-list {
-    list-style: none;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
+  list-style: none;
+  padding: 0;
+  margin: 0;
 }
 
 .project-item {
-    background-color: #fff;
-    padding: 15px 20px;
-    border-radius: 8px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #f0f2f5;
+  margin-bottom: 10px;
+  padding: 12px 15px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: 1px solid #ccc;
 }
 
 .project-item:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  background: #00aaff;
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 14px rgba(0,0,0,0.1);
 }
 
 .project-name {
-    font-weight: 600;
-}
-
-.project-language {
-    font-style: italic;
-    color: #555;
-    margin-left: 10px;
+  font-weight: 600;
 }
 
 .project-author {
-    font-size: 0.9rem;
-    color: #888;
-    margin-left: 20px;
+  font-size: 13px;
+  color: #1e5fe0;
+  margin-left: 5px;
 }
 
-/* Responsive */
-@media (max-width: 600px) {
-    .project-item {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 5px;
-    }
+.project-language {
+  font-size: 14px;
+  color: #0a3d91;
+}
 
-    .project-author {
-        margin-left: 0;
-    }
+.empty {
+  text-align: center;
+  color: #999;
+  padding: 20px;
+}
+
+/* ----------- Buttons ----------- */
+.btn-primary {
+  padding: 12px 22px;
+  border-radius: 10px;
+  border: none;
+  font-weight: 600;
+  font-size: 15px;
+  background: linear-gradient(135deg, #00aaff, #1e5fe0);
+  color: white;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+  transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+  background: linear-gradient(135deg, #1e5fe0, #0a3d91);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 14px rgba(0,0,0,0.2);
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 20px;
+  margin-top: 20px;
+}
+
+/* ----------- Floating Action Button (Extended) ----------- */
+.fab {
+  position: fixed;
+  bottom: 25px;
+  right: 25px;
+  height: 60px;
+  border-radius: 30px; /* pill when extended */
+  background: linear-gradient(135deg, #00aaff, #1e5fe0);
+  color: white;
+  font-size: 18px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 6px 14px rgba(0,0,0,0.2);
+  transition: all 0.3s ease;
+  user-select: none;
+  overflow: hidden;
+  white-space: nowrap;
+  width: 60px; /* collapsed */
+//   padding: 0 20px;
+  z-index: 1000;
+}
+
+.fab-icon {
+  font-size: 28px;
+  margin-right: 0;
+  transition: margin 0.3s ease;
+}
+
+.fab-text {
+  opacity: 0;
+  max-width: 0;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+/* Hover → expand with text */
+.fab:hover {
+  width: 200px;
+  justify-content: flex-start;
+  padding: 0px 20px;
+}
+
+.fab:hover .fab-icon {
+  margin-right: 12px;
+}
+
+.fab:hover .fab-text {
+  opacity: 1;
+  max-width: 140px;
 }

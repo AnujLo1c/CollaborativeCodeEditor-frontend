@@ -1,18 +1,39 @@
-<div class="p-4 bg-gray-100 min-h-screen flex flex-col items-center">
-  <div class="max-w-4xl w-full bg-white rounded-lg shadow-xl p-6">
-    <h1 class="text-2xl font-bold mb-4 text-center">Ace Angular Editor</h1>
+<div class="bg-gray-900 min-h-screen p-4 text-gray-100 flex justify-center items-start">
+  <div class="max-w-7xl w-full bg-gray-800 rounded-lg shadow-xl p-6 border border-gray-700">
+    
+    <!-- Title + Share -->
+    <div class="flex items-center justify-between mb-4">
+      <h1 class="text-3xl font-bold text-gray-200 tracking-wide">
+        {{ title() }}
+      </h1>
+      <button
+        (click)="generateShareableLink()"
+        class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-colors"
+      >
+        Share
+      </button>
+    </div>
 
-    <div class="flex flex-wrap gap-4 mb-4 justify-center">
-      <select data-type="theme" (change)="onThemeChange($event)">
+    <!-- Controls (moved right) -->
+    <div class="flex justify-end items-center mb-4 gap-4">
+      <select
+        class="bg-gray-700 text-gray-200 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        data-type="theme"
+        (change)="onThemeChange($event)"
+      >
         <option value="monokai">Monokai</option>
         <option value="github">GitHub</option>
         <option value="dracula">Dracula</option>
-        <option value="solarized_light">Solarized Light</option>
-        <option value="solarized_dark">Solarized Dark</option>
+        <option value="solarized_light">Solarized L</option>
+        <option value="solarized_dark">Solarized D</option>
         <option value="terminal">Terminal</option>
       </select>
 
-      <select data-type="mode" (change)="onThemeChange($event)">
+      <select
+        class="bg-gray-700 text-gray-200 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        data-type="mode"
+        (change)="onThemeChange($event)"
+      >
         <option value="typescript">TypeScript</option>
         <option value="javascript">JavaScript</option>
         <option value="html">HTML</option>
@@ -22,36 +43,44 @@
         <option value="java">Java</option>
       </select>
 
-      <select data-type="keyboard" (change)="onThemeChange($event)">
+      <select
+        class="bg-gray-700 text-gray-200 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        data-type="keyboard"
+        (change)="onThemeChange($event)"
+      >
         <option value="">Default</option>
         <option value="ace/keyboard/vim">Vim</option>
         <option value="ace/keyboard/emacs">Emacs</option>
       </select>
     </div>
 
-    <div class="flex gap-2 mb-4">
-      <button (click)="logCode()" class="px-4 py-2 bg-blue-600 text-white rounded">
-        Log Code
-      </button>
-      <button (click)="downloadCode()" class="px-4 py-2 bg-green-600 text-white rounded">
-        Download
-      </button>
+    <!-- Editor + Result split -->
+    <div class="grid grid-cols-1 lg:grid-cols-[2fr_1fr] gap-4 h-[calc(100vh-180px)]">
+  <!-- Editor -->
+  <div
+    #editorContainer
+    id="editor"
+    class="w-full h-full bg-gray-900 border rounded resize-none overflow-hidden"
+  ></div>
+
+  <!-- Result -->
+  <div class="flex flex-col w-full h-[62vh] bg-gray-700 rounded-lg border p-4">
+    <div class="flex justify-between items-center mb-4">
+      <h3 class="text-xl font-bold text-gray-200">Result</h3>
+      <div class="flex gap-3">
+        <button class="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-bold"
+        (click)="runCode()" >RUN</button>
+        <button class="px-6 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg font-bold" (click)="downloadCode()">Download</button>
+      </div>
     </div>
-
-    <!-- 🔹 Use only one container -->
- 
-
-@if (loading) {
-  <div class="loading-screen">
-  Loading project...
+    <div class="bg-gray-900 flex-grow p-4 rounded-lg text-gray-300 font-mono text-sm whitespace-pre-wrap overflow-auto">
+      {{ output() }}
+    </div>
+  </div>
 </div>
-}
 
- <div #editorContainer id="editor" class="border rounded w-full" style="height:400px; width:100%;"></div>
 
- <h3>Result</h3>
-<button (click)="runCode()"><h3>RUN</h3> </button>
-
-<h3 id="output" >{{output()}}</h3> 
+    <!-- Extra space below -->
+    <div class="mt-6"></div>
   </div>
 </div>

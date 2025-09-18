@@ -1,7 +1,9 @@
 import { isPlatformBrowser } from '@angular/common';
-import { Component, Inject, PLATFORM_ID, signal } from '@angular/core';
+import { Component, inject, Inject, PLATFORM_ID, signal } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { HeaderService } from '../../service/header-service';
+import { Auth } from '../../service/auth';
+import { CommonService } from '../../service/common-service';
 
 @Component({
   selector: 'app-header',
@@ -10,11 +12,15 @@ import { HeaderService } from '../../service/header-service';
   styleUrl: './header.scss'
 })
 export class Header {
- 
-isLogin!: () => boolean; 
-  constructor(private headerService:HeaderService) {
+ authService:Auth=inject(Auth);
 
-    this.isLogin=()=>this.headerService.isLogin();
+  constructor(private commonService:CommonService) {
   }
   
+  logout() {
+    console.log("Logging out...");
+    
+this.authService.logout();
+
+}
 }
