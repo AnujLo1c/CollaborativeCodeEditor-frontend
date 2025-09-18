@@ -23,6 +23,7 @@ export class EditorComponent implements AfterViewInit {
 
   private aceEditor: any;
   private subscription?: Subscription;
+   userInput: string = ''; 
   currentCode = '';
   isBrowser: boolean;
   output = signal<string>('');
@@ -115,9 +116,9 @@ this.projectId=this.route.snapshot.paramMap.get('id')!;
 
     const language = this.aceEditor.session.getMode().$id.replace("ace/mode/", "");
     const codepart = this.aceEditor.getValue();
-
+const input=this.userInput;
     try {
-      const result: string = await this.projectService.runProject(language, codepart);
+      const result: string = await this.projectService.runProject(language, codepart,input);
 
       this.output.set(result);
     } catch (error) {

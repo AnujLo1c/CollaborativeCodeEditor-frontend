@@ -145,7 +145,7 @@ console.log("Trying ot connect ot wesocket now");
   isConnected(): boolean {
     return !!this.stompClient?.connected;
   }
-runProject(language: any, code: any): Promise<string> {
+runProject(language: any, code: any, input: string): Promise<string> {
   let token: string | null = null;
   if (isPlatformBrowser(this.platformId)) {
     token = localStorage.getItem('jwt');
@@ -162,7 +162,7 @@ runProject(language: any, code: any): Promise<string> {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${token}`
     },
-    body: JSON.stringify({ language, code })
+    body: JSON.stringify({ language, code,input })
   })
     .then(response => response.json())
     .then(data => {
