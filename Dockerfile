@@ -12,8 +12,8 @@ RUN ng build --configuration production
 # Stage 2: Nginx for Serving Angular
 FROM nginx:alpine
 
-# Copy built Angular app from Stage 1
-COPY --from=build /app/dist/* /usr/share/nginx/html
+# Copy built Angular "browser" files from Stage 1
+COPY --from=build /app/dist/collaborative-code-editor/browser /usr/share/nginx/html
 
 # Copy custom nginx config (optional)
 COPY nginx.conf /etc/nginx/conf.d/default.conf
