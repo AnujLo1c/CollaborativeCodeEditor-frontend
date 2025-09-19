@@ -6,13 +6,14 @@ import SockJS from 'sockjs-client';
 import { BehaviorSubject } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { isPlatformBrowser } from '@angular/common';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ProjectService {
  
-
+  private apiUrl= environment.apiUrl;
   private stompClient: Client | null = null;
   private activeProjectId: string | null = null;
 
@@ -34,7 +35,7 @@ async checkAndOpenProject(projectId: string): Promise<any> {
     //TODO:: navigate ot login
   }
 
-  const response = await fetch(`http://localhost:8080/projects/${projectId}`, {
+  const response = await fetch(`${this.apiUrl}/projects/${projectId}`, {
     headers: {
       Authorization: `Bearer ${token}`, 
       'Content-Type': 'application/json'
@@ -77,14 +78,14 @@ setCode(code: string) {
     }
 
     // Create SockJS + STOMP client
-    // const socket = new SockJS('http://localhost:8080/ws');
+    // const socket = new SockJS('${this.apiUrl}/ws');
     // this.stompClient = Stomp.over(socket);
     this.activeProjectId = projectId;
 console.log("Trying ot connect ot wesocket now");
 
     // Connect with JWT token in headers
    this.stompClient = new Client({
-  webSocketFactory: () => new SockJS('http://localhost:8080/ws'),
+  webSocketFactory: () => new SockJS('${this.apiUrl}/ws'),
   connectHeaders: { Authorization: `Bearer ${token}` },
 
   // ✅ Called after successful connection
@@ -162,7 +163,7 @@ runProject(language: any, code: any, input: string): Promise<string> {
     return Promise.resolve("login again");
   }
 
-  return fetch('http://localhost:8080/projects/execute', {
+  return fetch('${this.apiUrl}/projects/execute', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -172,11 +173,11 @@ runProject(language: any, code: any, input: string): Promise<string> {
   })
     .then(response => response.json())
     .then(data => {
-      console.log('Server response:', data);
-      return data['output'];
+      console.log('Serveer response:', data);
+      return data;
     })
     .catch(error => {
-      console.error('Error:', error);
+      console.error(' Serveer Error:', error);
       return `Error: ${error}`;
     });
 }
@@ -196,7 +197,7 @@ runProject(language: any, code: any, input: string): Promise<string> {
   // Only access localStorage in browser
   let token: string | null = await this.getToken();
 console.log(token);
-  this.http.get<any>(`http://localhost:8080/projects/${projectId}`, {
+  this.http.get<any>(`${this.apiUrl}/projects/${projectId}`, {
     headers: {
       Authorization: `Bearer ${token}`
     }
@@ -228,7 +229,7 @@ connect(projectId: string, token: string | null) {
   console.log(token);
   
 
-  // const socket = new SockJS('http://localhost:8080/ws');
+  // const socket = new SockJS('${this.apiUrl}/ws');
   // this.stompClient = Stomp.over(socket);
   this.activeProjectId = projectId;
 
@@ -250,7 +251,7 @@ connect(projectId: string, token: string | null) {
   // );
 
 this.stompClient = new Client({
-  webSocketFactory: () => new SockJS('http://localhost:8080/ws'),
+  webSocketFactory: () => new SockJS('${this.apiUrl}/ws'),
   connectHeaders: { Authorization: `Bearer ${token}` },
   reconnectDelay: 5000,
   debug: (str) => console.log(str),
@@ -300,7 +301,7 @@ if(projectId==null || projectId==undefined){
   throw new Error("Project ID is null or undefined");
 }
   try {
-       const res = await fetch(`http://localhost:8080/projects/${projectId}/share`, {
+       const res = await fetch(`${this.apiUrl}/projects/${projectId}/share`, {
          method: 'POST',
          headers: {
            'Content-Type': 'application/json',
@@ -324,7 +325,7 @@ let token= await this.getToken();
 const username = localStorage.getItem('username');
 console.log("Adding project by shareId:", shareId, "for user:", username);
 
-  const res = await fetch(`http://localhost:8080/projects/share/${shareId}?username=${username}`, {
+  const res = await fetch(`${this.apiUrl}/projects/share/${shareId}?username=${username}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

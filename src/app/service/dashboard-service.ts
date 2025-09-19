@@ -1,5 +1,6 @@
 import { isPlatformBrowser } from '@angular/common';
 import { Inject, Injectable, PLATFORM_ID, signal } from '@angular/core';
+import { environment } from '../../environments/environment';
 
 
 
@@ -8,6 +9,7 @@ import { Inject, Injectable, PLATFORM_ID, signal } from '@angular/core';
   providedIn: 'root'
 })
 export class DashboardService {
+  private apiUrl= environment.apiUrl;
   constructor(@Inject(PLATFORM_ID) private platformId: Object) { }
   async getToken() {
     let token: string | null = null;
@@ -25,7 +27,7 @@ export class DashboardService {
     const token = (await (this.getToken())).trim();
     console.log(result);
 
-    const response = await fetch(`http://localhost:8080/projects`, {
+    const response = await fetch(`${this.apiUrl}/projects`, {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${token}`,
@@ -57,7 +59,7 @@ throw new Error("No username found in local storage");
 console.log(token);
 
   try {
-    const response = await fetch(`http://localhost:8080/auth/fetch-projects?username=${encodeURIComponent(username)}`, {
+    const response = await fetch(`${this.apiUrl}/auth/fetch-projects?username=${encodeURIComponent(username)}`, {
       method: 'GET',
       headers: {
         Authorization: `Bearer ${token}`,

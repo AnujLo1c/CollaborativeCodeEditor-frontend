@@ -75,6 +75,22 @@
     },
     "defaultConfiguration": "production"
   },
+  "serve": {
+  "builder": "@angular-devkit/build-angular:dev-server",
+  "options": {
+    "buildTarget": "collaborative-code-editor:build"
+  },
+  "configurations": {
+    "production": {
+      "buildTarget": "collaborative-code-editor:build:production"
+    },
+    "development": {
+      "buildTarget": "collaborative-code-editor:build:development"
+    }
+  },
+  "defaultConfiguration": "development"
+}
+,
 
    "prerender": {
           "builder": "@nguniversal/builders:prerender",
@@ -86,9 +102,7 @@
         }
       }
     }
-  },
-    "cli": {
-    "defaultProject": "collaborative-code-editor"
   }
+  
  
 }

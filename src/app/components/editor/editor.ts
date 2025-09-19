@@ -118,9 +118,16 @@ this.projectId=this.route.snapshot.paramMap.get('id')!;
     const codepart = this.aceEditor.getValue();
 const input=this.userInput;
     try {
-      const result: string = await this.projectService.runProject(language, codepart,input);
-
-      this.output.set(result);
+      const result: any = await this.projectService.runProject(language, codepart,input);
+      console.log("Result 1 from server:", result);
+const parsedResult = "Status: "+result['status'] + "\n" + result['stdout'] + "\n" + result['stderr'];
+      // status: 'Accepted'}
+// status
+// "Accepted"
+// stderr
+// ""
+// stdout
+      this.output.set(parsedResult);
     } catch (error) {
       console.error("Error running project:", error);
     }

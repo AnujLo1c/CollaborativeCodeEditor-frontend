@@ -6,13 +6,14 @@ import { HttpClient } from '@angular/common/http';
 import { CommonService } from './common-service';
 
 import { HeaderService } from './header-service';
+import { environment } from '../../environments/environment.prod';
 
 @Injectable({
   providedIn: 'root'
 })
 export class Auth {
   private tokenKey = 'jwt';
-  private baseUrl = 'http://localhost:8080/auth';
+  private baseUrl = environment.apiUrl;
   private _isLogin=signal<boolean>(false);
    readonly isLogin = this._isLogin.asReadonly();
   constructor(private router: Router, private http: HttpClient,private commonService:CommonService,private headerService:HeaderService) {
