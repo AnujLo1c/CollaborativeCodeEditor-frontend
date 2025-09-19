@@ -3,7 +3,7 @@ import { FormsModule } from '@angular/forms';
 import { isPlatformBrowser } from '@angular/common';
 
 import { Subscription } from 'rxjs';
-import { log } from 'node:console';
+// import { log } from 'node:console';
 import { ProjectService } from '../../service/project-service';
 import { ActivatedRoute, Router } from '@angular/router';
 

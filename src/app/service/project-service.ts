@@ -1,12 +1,11 @@
+
 import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
+import { Client, Message } from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
-import { Client, over, Message } from 'stompjs';
+
 import { BehaviorSubject } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { isPlatformBrowser } from '@angular/common';
-import { log } from 'node:console';
-import { SourceTextModule } from 'node:vm';
-import { send } from 'node:process';
 
 @Injectable({
   providedIn: 'root'
@@ -78,42 +77,49 @@ setCode(code: string) {
     }
 
     // Create SockJS + STOMP client
-    const socket = new SockJS('http://localhost:8080/ws');
-    this.stompClient = over(socket);
+    // const socket = new SockJS('http://localhost:8080/ws');
+    // this.stompClient = Stomp.over(socket);
     this.activeProjectId = projectId;
 console.log("Trying ot connect ot wesocket now");
 
     // Connect with JWT token in headers
-    this.stompClient.connect(
-      { Authorization: `Bearer ${token}` },
-      () => {
-        console.log('✅ Connected to WebSocket for project:', projectId);
-// this.sendMessage( "Anuj is now online ",projectId);
-        // Subscribe to the project code topic
-        this.stompClient?.subscribe(
-          `/topic/project/${projectId}/code`,
-          (message: Message) => {
-            
-             
-             console.log('📩 no update code update:', message.body);
-            if (message.body) {
-              console.log('📩 Received code update:', message.body);
-              this.codeSubject.next(message.body); 
-              
-            }
-          }
-        );
-      },
-      (error) => {
-        console.error('❌ WebSocket connection error:', error);
+   this.stompClient = new Client({
+  webSocketFactory: () => new SockJS('http://localhost:8080/ws'),
+  connectHeaders: { Authorization: `Bearer ${token}` },
+
+  // ✅ Called after successful connection
+  onConnect: () => {
+    console.log('✅ Connected to WebSocket for project:', projectId);
+
+    this.stompClient?.subscribe(`/topic/project/${projectId}/code`, (message: Message) => {
+      if (message.body) {
+        console.log('📩 Received code update:', message.body);
+        this.codeSubject.next(message.body);
       }
-    );
+    });
+  },
+
+  // ❌ Called if connection fails
+  onStompError: (frame) => {
+    console.error('❌ Broker reported error:', frame.headers['message']);
+    console.error('Details:', frame.body);
+  },
+
+  // 🔌 Called if WebSocket closes
+  onWebSocketClose: (event) => {
+    console.warn('⚠️ WebSocket closed:', event);
+  }
+});
+
+// Start connection
+this.stompClient.activate();
+
   }
 
   sendMessage(message: string,projectId:string): void {
     if (this.stompClient && this.stompClient.connected) {
       
-      this.stompClient.send(`/app/project/${projectId}/code`, {}, message);
+      this.stompClient.publish({destination :`/app/project/${projectId}/code`, body: message});
     }
     else {
 
@@ -122,7 +128,7 @@ console.log("Trying ot connect ot wesocket now");
   updateProjectCode(projectId: string, code: string) {
     if (this.stompClient && this.stompClient.connected) {
       
-      this.stompClient.send(`/app/project/${projectId}/code`, {}, code);
+      this.stompClient.publish({destination:`/app/project/${projectId}/code`, body: code});
       console.log('📤 Sent code update:', code);
     } else {
       console.error("❌ Cannot send, WebSocket not connected.");
@@ -131,7 +137,7 @@ console.log("Trying ot connect ot wesocket now");
 
   disconnect() {
     if (this.stompClient) {
-      this.stompClient.disconnect(() => {
+      this.stompClient.deactivate().then(() => {
         console.log("🔌 Disconnected from WebSocket.");
       });
       this.stompClient = null;
@@ -222,31 +228,62 @@ connect(projectId: string, token: string | null) {
   console.log(token);
   
 
-  const socket = new SockJS('http://localhost:8080/ws');
-  this.stompClient = over(socket);
+  // const socket = new SockJS('http://localhost:8080/ws');
+  // this.stompClient = Stomp.over(socket);
   this.activeProjectId = projectId;
 
-  this.stompClient.connect(
-    { Authorization: `Bearer ${token}` },   // 🔑 send JWT in headers
-    () => {
-      console.log('✅ Connected to WebSocket for project:', projectId);
+  // this.stompClient.connect(
+  //   { Authorization: `Bearer ${token}` },   // 🔑 send JWT in headers
+  //   () => {
+  //     console.log('✅ Connected to WebSocket for project:', projectId);
 
-      this.stompClient?.subscribe(
-        `/topic/project/${projectId}/code`,
-        (message: Message) => {
-          if (message.body) {
-            console.log('📩 Received code update:', message.body);
-            this.codeSubject.next(message.body);
-          }
+  //     this.stompClient?.subscribe(
+  //       `/topic/project/${projectId}/code`,
+  //       (message: Message) => {
+  //         if (message.body) {
+  //           console.log('📩 Received code update:', message.body);
+  //           this.codeSubject.next(message.body);
+  //         }
+  //       }
+  //     );
+  //   }
+  // );
+
+this.stompClient = new Client({
+  webSocketFactory: () => new SockJS('http://localhost:8080/ws'),
+  connectHeaders: { Authorization: `Bearer ${token}` },
+  reconnectDelay: 5000,
+  debug: (str) => console.log(str),
+  onConnect: () => {
+    console.log('✅ Connected to WebSocket for project:', projectId);
+
+    this.stompClient?.subscribe(
+      `/topic/project/${projectId}/code`,
+      (message: Message) => {
+        if (message.body) {
+          console.log('📩 Received code update:', message.body);
+          this.codeSubject.next(message.body);
         }
-      );
-    }
-  );
+      }
+    );
+  },
+  onStompError: (frame) => {
+    console.error('❌ Broker error:', frame.headers['message']);
+    console.error(frame.body);
+  }
+});
+
+this.stompClient.activate();
+
 }
 
   updateProject(projectId: string, code: string) {
     if (this.stompClient && this.stompClient.connected) {
-      this.stompClient.send(`/app/project/${projectId}/code`, {}, code);
+      this.stompClient.publish({
+  destination: `/app/project/${projectId}/code`,
+  body: code
+});
+
       console.log('📤 Sent code update:', code);
     } else {
       console.error("❌ Cannot send, WebSocket not connected.");
