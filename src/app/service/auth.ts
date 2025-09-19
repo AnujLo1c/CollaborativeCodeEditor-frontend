@@ -28,7 +28,7 @@ export class Auth {
       this._isLogin.set(true);
       console.log("Login called with:", username, password, this.isLogin());
       
-      return this.http.post(`${this.baseUrl}/login`, { username, password },{responseType: 'text'});
+      return this.http.post(`${this.baseUrl}/auth/login`, { username, password },{responseType: 'text'});
     }
     throw new Error("Invalid email or password");
   }
@@ -36,7 +36,7 @@ export class Auth {
 
 register(username: string,email: string, password: string): Observable<any> {
     if (email && password) {
-      return this.http.post(`${this.baseUrl}/register`, { username, email, password },{responseType: 'text'});
+      return this.http.post(`${this.baseUrl}/auth/register`, { username, email, password },{responseType: 'text'});
     }
    throw new Error("Invalid email or password");
   }
@@ -45,7 +45,7 @@ register(username: string,email: string, password: string): Observable<any> {
    const token=await this.commonService.getToken();
    console.log("Token in logout:", token);
 
-      await fetch(`${this.baseUrl}/logout`, {
+      await fetch(`${this.baseUrl}/auth/logout`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
