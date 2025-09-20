@@ -1,6 +1,6 @@
 import { Injectable, signal } from '@angular/core';
 import { Router } from '@angular/router';
-import {  Observable } from 'rxjs';
+import {  catchError, Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 
 import { CommonService } from './common-service';
@@ -25,10 +25,22 @@ export class Auth {
   
  login(username: string, password: string): Observable<any> {
     if (username && password) {
-      this._isLogin.set(true);
-      console.log("Login called with:", username, password, this.isLogin());
+  
       
-      return this.http.post(`${this.baseUrl}/auth/login`, { username, password },{responseType: 'text'});
+       this.http.post(`${this.baseUrl}/auth/login`, { username, password },{responseType: 'text'}).pipe(
+        (response) => {
+          console.log("Login response:", response);
+             this._isLogin.set(true);
+      console.log("Login called with:", username, password, this.isLogin());
+      console.log("Response: "+response);
+      
+          return response;
+        },
+        catchError((error) => {
+          console.error('Login error:', error);
+          throw error;
+        })
+       );
     }
     throw new Error("Invalid email or password");
   }
